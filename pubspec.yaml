@@ -1,0 +1,59 @@
+name: sran
+version: 1.0.0+1
+publish_to: none
+description: A New Flutter project.
+environment: 
+  sdk: '>=2.18.0 <3.0.0'
+
+dependencies:
+
+  cupertino_icons: ^1.0.2
+  get: 4.6.5
+  fluttertoast: 8.0.9
+  shared_preferences: 2.0.15
+  flutter_svg: ^1.1.5
+  salomon_bottom_bar: ^3.3.1
+  circular_countdown_timer: ^0.2.2
+  syncfusion_flutter_charts: ^20.2.49
+  intro_slider: ^3.0.10
+
+  flutter: 
+    sdk: flutter
+  firebase_core: ^1.22.0
+  firebase_storage: ^10.3.8
+  firebase_auth: ^3.9.0
+  cloud_firestore: ^3.4.8
+  get_storage: ^2.0.3
+  after_layout: ^1.2.0
+  image_picker: ^0.8.5+3
+  intl: ^0.17.0
+
+dev_dependencies: 
+  flutter_lints: ^2.0.0
+  flutter_test: 
+    sdk: flutter
+
+flutter: 
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/poppins/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/poppins/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/poppins/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/poppins/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/poppins/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/poppins/Poppins-Black.ttf
+          weight: 900
+

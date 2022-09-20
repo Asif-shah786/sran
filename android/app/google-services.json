@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "522628660712",
+    "project_id": "sran-668fa",
+    "storage_bucket": "sran-668fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522628660712:android:359fbd78081f5afabaf85d",
+        "android_client_info": {
+          "package_name": "com.sranofficial01.app.sran"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522628660712-cmvnslg92mk6tqmcq7h5mktv77ssr96v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSmdbDxl0qFnXz_XZS3k003zZ2lkSPOMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "522628660712-cmvnslg92mk6tqmcq7h5mktv77ssr96v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "522628660712-28gf695ef183btog0f7bdcpiutomehr2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sranofficial01.app.sran"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
