@@ -21,8 +21,8 @@ class BottomTabsController extends GetxController {
   void onInit() {
     bodyWidgets = [
       KeepAliveWrapper(child: HomeView(),),
-      KeepAliveWrapper(child: LeaderboardView(),),
-      KeepAliveWrapper(child: SettingView(),),
+      const KeepAliveWrapper(child: LeaderboardView(),),
+      const KeepAliveWrapper(child: SettingView(),),
     ];
     super.onInit();
   }

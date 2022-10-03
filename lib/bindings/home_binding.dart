@@ -4,6 +4,6 @@ import '../core/services/home_service.dart';
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.find<HomeService>();
+    Get.put(HomeService(), permanent: true);
   }
 }

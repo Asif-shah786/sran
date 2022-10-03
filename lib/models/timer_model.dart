@@ -12,7 +12,7 @@ class TimerSessionData {
         'duration': model.duration,
         'date': model.dateTime,
       };
-  static TimerSessionData fromMap(Map map) => TimerSessionData(
+  static TimerSessionData fromMap(Map<String, dynamic> map) => TimerSessionData(
     duration: map['duration'],
     dateTime: map['date'],
       );

@@ -12,27 +12,17 @@ import '../../../core/services/home_service.dart';
 import '../../../core/widgets/custom_toolbar.dart';
 import '../../../routes/app_pages.dart';
 
-
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
-class _userData {
-  _userData(this.days, this.hours);
+class UserChartData {
+  UserChartData(this.days, this.duration);
 
   final String days;
-  final double hours;
+  final double duration;
 }
 
-
 class HomeView extends GetWidget<HomeService> {
-
-  List<_userData> data = [
-    _userData('Sun', 3),
-    _userData('Mon', 10),
-    _userData('Tue', 3.5),
-    _userData('Thur', 7),
-    _userData('Fri', 5)
-  ];
 
   HomeView({Key? key}) : super(key: key);
   @override
@@ -70,47 +60,130 @@ class HomeView extends GetWidget<HomeService> {
                   ),
                 ),
                 SizedBox(height: getVerticalSize(10)),
-                buildGoalTile(),
+                buildTodayGoalTile(),
                 SizedBox(height: getVerticalSize(30)),
-                CircularCountDownTimer(
-                  isReverse: false,
-                  autoStart: false,
-                  initialDuration: Get.find<HomeService>().initialDuration!,
-                  width: double.infinity,
-                  height: getVerticalSize(230),
-                  duration: 10,
-                  fillColor: kPrimaryColor,
-                  ringColor: kStrokeColor,
-                  controller: Get.find<HomeService>().countDownController,
-                  backgroundColor: kScaffoldBackgroundColor,
-                  strokeWidth: 25.0,
-                  strokeCap: StrokeCap.round,
-                  isTimerTextShown: true,
-                  textStyle: const TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w600,
-                      color: kPrimaryColor),
-                  onComplete: () => Get.find<HomeService>().onCounterComplete(),
-                  onStart: () => () => Get.find<HomeService>().onCounterComplete(),
+                Obx(() => GestureDetector(
+                  onTap: (){
+                    Get.bottomSheet(
+                      BottomSheet(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                        onClosing: () {  },
+                        builder: (BuildContext context) {
+                          return SizedBox(
+                            width : double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(30.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.5,
+                                      child: TextField(
+                                        textAlign : TextAlign.center,
+                                        controller: Get.find<HomeService>().durationController,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.all(10),
+                                          border: OutlineInputBorder(
+                                              borderSide:
+                                              const BorderSide(color: kGreyLightColor, width: 1),
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide:
+                                              const BorderSide(color: kGreyLightColor, width: 1),
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          hintText: 'Duration: 1-7',
+                                          helperStyle: const TextStyle(
+                                            color: kGreyColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: getVerticalSize(10),),
+                                    ElevatedButton(onPressed: (){
+                                      print(Get.find<HomeService>().durationController.text);
+                                      Get.find<HomeService>().setAndWriteCounterDuration(
+                                          duration : int.parse(Get.find<HomeService>().durationController.text.trim().toString())*3600
+                                      );
+                                      Get.find<HomeService>().durationController.clear();
+                                      Get.back();
+                                    },
+                                        style: TextButton.styleFrom(
+                                            fixedSize: (const Size(120, 50)),
+                                            textStyle: const TextStyle(
+                                                color: kWhiteColor,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16),
+                                            backgroundColor: kPrimaryColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(16),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(vertical: 5)),
+                                        child: const Text('Set Duration'))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    );
+                  },
+                  child: CircularCountDownTimer(
+                        isReverse: false,
+                        autoStart: Get.find<HomeService>().autoRestart.value,
+                        initialDuration: Get.find<HomeService>().initialDuration.value,
+                        width: double.infinity,
+                        height: getVerticalSize(230),
+                        duration: Get.find<HomeService>().counterDuration.value,
+                        fillColor: kPrimaryColor,
+                        ringColor: kStrokeColor,
+                        controller: Get.find<HomeService>().countDownController,
+                        backgroundColor: kScaffoldBackgroundColor,
+                        strokeWidth: 25.0,
+                        strokeCap: StrokeCap.round,
+                        isTimerTextShown: true,
+                        textStyle: const TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.w600,
+                            color: kPrimaryColor),
+                        onComplete: () => Get.find<HomeService>().onCounterComplete(),
+                      ),
+                )),
+                SizedBox(
+                  height: getVerticalSize(20),
                 ),
-                SizedBox(height: getVerticalSize(20),),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: getHorizontalSize(50),
-                      width: getHorizontalSize(50),
+                      height: getHorizontalSize(70),
+                      width: getHorizontalSize(70),
                       child: Card(
                         elevation: 4.0,
-                        color: kHomeIconColour,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),),
-                        child: IconButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () => Get.find<HomeService>().onCounterReset(),
-                          icon: const Icon(
-                            Icons.restart_alt_rounded,
-                            size: 30.0,
+                        color: kPrimaryColor,
+                        shape: const CircleBorder(),
+                        child: Center(
+                          child: IconButton(
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () =>
+                                Get.find<HomeService>().onCounterStart(),
+                            icon: const Icon(
+                              Icons.play_arrow_rounded,
+                              color: kWhiteColor,
+                              size: 50.0,
+                            ),
                           ),
                         ),
                       ),
@@ -123,39 +196,14 @@ class HomeView extends GetWidget<HomeService> {
                         elevation: 4.0,
                         color: kPrimaryColor,
                         shape: const CircleBorder(),
-                        child: Center(
-                          child: Obx(() => IconButton(
-                            padding: const EdgeInsets.all(0),
-                            onPressed: () =>
-                                Get.find<HomeService>().isStarted.value ?
-                                Get.find<HomeService>().onCounterPaused():
-                                Get.find<HomeService>().onCounterStart(),
-                            icon: Icon(
-                              Get.find<HomeService>().isStarted.value ?
-                              Icons.pause_rounded:
-                              Icons.play_arrow_rounded,
-                              color: kWhiteColor,
-                              size: 50.0,
-                            ),
-                          )),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: getHorizontalSize(10)),
-                    SizedBox(
-                      height: getHorizontalSize(50),
-                      width: getHorizontalSize(50),
-                      child: Card(
-                        elevation: 4.0,
-                        color: kHomeIconColour,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),),
                         child: IconButton(
                           padding: const EdgeInsets.all(0),
-                          onPressed: () => Get.find<HomeService>().onCounterStop(),
+                          onPressed: () =>
+                              Get.find<HomeService>().onCounterStop(),
                           icon: const Icon(
                             Icons.stop_rounded,
-                            size: 30.0,
+                            color: kWhiteColor,
+                            size: 50.0,
                           ),
                         ),
                       ),
@@ -171,123 +219,31 @@ class HomeView extends GetWidget<HomeService> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: getVerticalSize(10),),
-                Row(
+                SizedBox(
+                  height: getVerticalSize(10),
+                ),
+                Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Obx(() => Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularCountDownTimer(
-                          autoStart: false,
-                          initialDuration: 2000,
-                          height: getVerticalSize(50),
-                          width: getVerticalSize(50),
-                          duration: 2000,
-                          fillColor: kPrimaryColor,
-                          ringColor: kPrimaryColor,
-                          controller: controller.hoursController,
-                          backgroundColor: kScaffoldBackgroundColor,
-                          strokeWidth: 8.0,
-                          strokeCap: StrokeCap.round,
-                          isTimerTextShown: true,
-                          isReverse: true,
-                          textStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: kPrimaryColor),
-                          onComplete: controller.onCounterComplete(),
-                          onStart: () => controller.onCounterStart,
-                        ),
-                        SizedBox(height: getHorizontalSize(5)),
-                        const Text(
-                          textAlign: TextAlign.center,
-                          'HOURS',
-                          style: TextStyle(
-                            color: kSubTitleColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    )),
+                    remTimeWidget(
+                        hours: true,
+                        todaysGoal: Get.find<HomeService>().todaysGoal.value,
+                        duration:
+                        Get.find<HomeService>().getDuration.toInt()),
                     SizedBox(width: getHorizontalSize(20)),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularCountDownTimer(
-                          autoStart: false,
-                          initialDuration: 2000,
-                          height: getVerticalSize(50),
-                          width: getVerticalSize(50),
-                          duration: 2000,
-                          fillColor: kPrimaryColor,
-                          ringColor: kPrimaryColor,
-                          controller: controller.minutesController,
-                          backgroundColor: kScaffoldBackgroundColor,
-                          strokeWidth: 8.0,
-                          strokeCap: StrokeCap.round,
-                          isTimerTextShown: true,
-                          isReverse: true,
-                          textStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: kPrimaryColor),
-                          onComplete: controller.onCounterComplete(),
-                          // onStart: controller.onCounterStart(),
-                        ),
-                        SizedBox(height: getHorizontalSize(5)),
-                        const Text(
-                          textAlign: TextAlign.center,
-                          'MINUTES',
-                          style: TextStyle(
-                            color: kSubTitleColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
+                    remTimeWidget(
+                        minutes: true,
+                        todaysGoal: Get.find<HomeService>().todaysGoal.value,
+                        duration:
+                        Get.find<HomeService>().getDuration.toInt()),
                     SizedBox(width: getHorizontalSize(20)),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularCountDownTimer(
-                          autoStart: false,
-                          initialDuration: 2000,
-                          height: getVerticalSize(50),
-                          width: getVerticalSize(50),
-                          duration: 2000,
-                          fillColor: kPrimaryColor,
-                          ringColor: kPrimaryColor,
-                          // controller: controller.secondsController,
-                          backgroundColor: kScaffoldBackgroundColor,
-                          strokeWidth: 8.0,
-                          strokeCap: StrokeCap.round,
-                          isTimerTextShown: true,
-                          isReverse: true,
-                          textStyle: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: kPrimaryColor),
-                          onComplete: controller.onCounterComplete(),
-                          // onStart: controller.onCounterStart(),
-                        ),
-                        SizedBox(height: getHorizontalSize(5)),
-                        const Text(
-                          textAlign: TextAlign.center,
-                          'SECONDS',
-                          style: TextStyle(
-                            color: kSubTitleColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
+                    remTimeWidget(
+                        seconds: true,
+                        todaysGoal: Get.find<HomeService>().todaysGoal.value,
+                        duration:
+                        Get.find<HomeService>().getDuration.toInt()),
                   ],
-                ),
+                )),
                 SizedBox(height: getHorizontalSize(20)),
                 const Text(
                   'Weekly Progress',
@@ -302,44 +258,50 @@ class HomeView extends GetWidget<HomeService> {
                 //   fontSize: 18,
                 // ),),
                 SizedBox(height: getHorizontalSize(10)),
-                SfCartesianChart(
+                Obx(() => SfCartesianChart(
                     primaryXAxis: CategoryAxis(),
                     // Enable legend
-                    legend: Legend(isVisible: false),
+                    legend: Legend(isVisible: true, position: LegendPosition.bottom),
                     // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<_userData, String>>[
-                      LineSeries<_userData, String>(
+                    tooltipBehavior: TooltipBehavior(enable: true,),
+                    series: <ChartSeries<UserChartData, String>>[
+                      LineSeries<UserChartData, String>(
                           color: const Color(0xffFFE4D4),
-                          markerSettings: const MarkerSettings(isVisible :true, color: kPrimaryColor, width: 8, borderColor: kPrimaryColor),
-                          dataSource: data,
-                          xValueMapper: (_userData sales, _) => sales.days,
-                          yValueMapper: (_userData sales, _) => sales.hours,
-                          name: 'Time',
+                          markerSettings: const MarkerSettings(
+                              isVisible: true,
+                              color: kPrimaryColor,
+                              width: 8,
+                              borderColor: kPrimaryColor),
+                          dataSource: Get.find<HomeService>().userChartData.value,
+                          xValueMapper: (UserChartData sales, _) => sales.days,
+                          yValueMapper: (UserChartData sales, _) => (sales.duration/3600).toPrecision(1),
+                          yAxisName: 'h',
+                          xAxisName: 'd',
+                          name: 'Hours',
                           // Enable data label
-                          dataLabelSettings: const DataLabelSettings(isVisible: false))
-                    ]),
+                          dataLabelSettings:
+                          const DataLabelSettings(isVisible: true,))
+                    ])),
 
-            // Expanded(
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8.0),
-            //     //Initialize the spark charts widget
-            //     child: SfSparkLineChart.custom(
-            //       //Enable the trackball
-            //       trackball: SparkChartTrackball(
-            //           activationMode: SparkChartActivationMode.tap),
-            //       //Enable marker
-            //       marker: SparkChartMarker(
-            //           displayMode: SparkChartMarkerDisplayMode.all),
-            //       //Enable data label
-            //       labelDisplayMode: SparkChartLabelDisplayMode.all,
-            //       xValueMapper: (int index) => data[index].days,
-            //       yValueMapper: (int index) => data[index].hours,
-            //       dataCount: 5,
-            //     ),
-            //   ),
-            // )
-
+                // Expanded(
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(8.0),
+                //     //Initialize the spark charts widget
+                //     child: SfSparkLineChart.custom(
+                //       //Enable the trackball
+                //       trackball: SparkChartTrackball(
+                //           activationMode: SparkChartActivationMode.tap),
+                //       //Enable marker
+                //       marker: SparkChartMarker(
+                //           displayMode: SparkChartMarkerDisplayMode.all),
+                //       //Enable data label
+                //       labelDisplayMode: SparkChartLabelDisplayMode.all,
+                //       xValueMapper: (int index) => data[index].days,
+                //       yValueMapper: (int index) => data[index].hours,
+                //       dataCount: 5,
+                //     ),
+                //   ),
+                // )
               ],
             ),
           ),
@@ -348,7 +310,7 @@ class HomeView extends GetWidget<HomeService> {
     );
   }
 
-  Container buildGoalTile() {
+  Container buildTodayGoalTile() {
     return Container(
       height: getVerticalSize(70),
       width: double.infinity,
@@ -380,38 +342,119 @@ class HomeView extends GetWidget<HomeService> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              Obx(() => Text(
-                Get.find<HomeService>().getDuration,
-                style: const TextStyle(
-                  color: kSubTitleColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Obx(() => SizedBox(
+                    child: Text(
+                      "${(Get.find<HomeService>().todaysGoal ~/ 3600).toString()} hours",
+                      style: const TextStyle(
+                        color: kSubTitleColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  )),
+                  IconButton(
+                    onPressed: () => Get.find<HomeService>().setDailyGoalValue(),
+                    icon: const Icon(
+                      Icons.edit_rounded,
+                      size: 20,
+                      color: kSubTitleColor,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  )
+                ],
+              ),
             ],
           ),
           SizedBox(
-            width: getHorizontalSize(10),
+            width: getHorizontalSize(4),
           ),
-          ElevatedButton(
+          Obx(() => ElevatedButton(
             onLongPress: null,
             onPressed: null,
             style: TextButton.styleFrom(
-              backgroundColor: const Color(0xffFFE4D4),
+              backgroundColor: Get.find<HomeService>().inProgress.value ? const Color(0xffFFE4D4) : Colors.lightGreen,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text(
-              'In Progress',
+            child: Text(
+              Get.find<HomeService>().inProgress.value ?'In Progress' : 'Completed',
               style: TextStyle(
-                color: Color(0xffFF7629),
+                color: Get.find<HomeService>().inProgress.value ? const Color(0xffFF7629) : Colors.greenAccent,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
-          )
+          ))
         ],
       ),
     );
   }
+
+  Widget remTimeWidget(
+      {bool hours = false,
+      minutes = false,
+      seconds = false,
+      required int duration,
+      required double todaysGoal,
+      }) {
+    print(duration);
+    double value = 0.0;
+    String title = 'Nil';
+    List timeRemaining = '${(Duration(seconds: (todaysGoal).toInt() - duration))}'
+        .split('.')[0]
+        .padLeft(8, '0')
+        .split(':');
+    if (hours) {
+      value = double.parse(timeRemaining[0]) ;
+      title = 'HOURS';
+    }
+    if (minutes) {
+      value = double.parse(timeRemaining[1]);
+      title = 'Minutes';
+    }
+    if (seconds) {
+      value = double.parse(timeRemaining[2]);
+      title = 'SECONDS';
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: getVerticalSize(52),
+          width: getVerticalSize(52),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CircularProgressIndicator(
+                strokeWidth: 6,
+                value: value/100,
+                valueColor: const AlwaysStoppedAnimation(kPrimaryColor),
+                backgroundColor: kStrokeColor,
+              ),
+              Center(
+                child: Text(value.toString()),
+              ),
+            ],
+          ),
+        ),
+        Text(
+          textAlign: TextAlign.center,
+          title,
+          style: const TextStyle(
+            color: kSubTitleColor,
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+  // if(minutes) return time[1].toString();
+  // if(seconds) return time[2].toString();
+
 }
